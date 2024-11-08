@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Bitless</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+      /* Estilos básicos */
+      body, html {
+          margin: 0;
+          padding: 0;
+          overflow: hidden; /* Evita barras de desplazamiento */
+          width: 100%;
+          height: 100%;
+      }
+
+      /* Canvas como fondo */
+      #backgroundCanvas {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: -1; /* Coloca el canvas detrás de otros elementos */
+      }
+
+      /* Estilos de contenido */
+      .content {
+          position: relative;
+          z-index: 1;
+          color: white;
+          text-align: center;
+          font-family: Arial, sans-serif;
+          margin-top: 20vh;
+      }
+  </style>
+</head>
+
+<body data-bs-theme="dark">
+
+
+    <div class="container-fluid">
+        <div class="row"  style="background-color:#000;">
+            <nav class="">
+                <div class="d-flex align-items-center gap-3">
+                  <a class="" href="/">
+                    <img src="/img/BitlessSoloLogo.png" width="224" height="50" class="me-2" alt="Bitless Logo" loading="lazy" />
+                  </a>
+
+                    <a href="/tilered" class="link-secondary" >Tilered</a>
+                    <a href="/spriter" class="link-secondary"  >Spriter</a>
+              
+                </div>
+              </nav>
+
+        </div>
+        <canvas id="backgroundCanvas"></canvas>
+
+        <br />
+        <div class="row col-bg-11">
+          <div class="col-md-12">
+          <div class="card"  >
+            <!-- <img src="..." class="card-img-top" alt="..."> -->
+            <div class="card-body">
+              <p class="card-text">
+                You can find Spriter and Tilered tools below, useful to craete sprite atlas and tileset levels<br />
+                Also you can watch my <a class="link-warning" href="/youtube.com">youtube channel</a>  where you can find tutoriales about game development using typescrit as well as usage of mentioned tools.
+              </p>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <br />
+        <div class="row col-bg-11">
+
+         
+          
+          <div class="col-md-4">
+            <div class="card" style="width: 100%;" >
+              <!-- <img src="..." class="card-img-top" alt="..."> -->
+              <div class="card-body">
+                <h5 class="card-title">Illusion TS</h5>
+                <p class="card-text">is a Typescript game library used to create video game prototypes for the web</p>
+                <a href="https://gitlab.com/pavul/illusionts" class="btn btn-warning">Check it here...</a>
+              </div>
+            </div>
+          </div>
+          
+
+          <div class="col-md-4">
+          <div class="card" style="width: 100%;">
+            <!-- <img src="..." class="card-img-top" alt="..."> -->
+            <div class="card-body">
+              <h5 class="card-title">Spriter</h5>
+              <p class="card-text">is a little tool to load a  buch of images and create your own atlasses, after you are done you can download
+                a zip containing the new atlas and a json with the info you need to use that info in your game, was created to create atlases that
+                can be used with Illusion library  
+              </p>
+              <a href="/spriter" class="btn btn-warning">Spriter</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" style="width: 100%;">
+            <!-- <img src="..." class="card-img-top" alt="..."> -->
+            <div class="card-body">
+              <h5 class="card-title">Tilered</h5>
+              <p class="card-text">is a  tool to create your levels using tilesets, you can also use multiple layers to set foreground, brackground or even
+                enemies positions.
+              </p>
+              <a href="/tilered" class="btn btn-warning">Tilered</a>
+            </div>
+          </div>
+        </div>
+
+          
+        </div>
+        <div class="row">
+          
+        </div>
+    </div>
+
+    <!-- Bootstrap core JS-->
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Spriter</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+</head>
+
+<body data-bs-theme="dark">
+
+
+    <div class="container-fluid">
+        <div class="row"  style="background-color:#000;">
+            <nav class="">
+                <div class="d-flex align-items-center gap-3">
+                  <a class="" href="/">
+                    <img src="/img/BitlessSoloLogo.png" width="224" height="50" class="me-2" alt="Bitless Logo" loading="lazy" />
+                  </a>
+              
+                    <!-- <a href="/tilered">Tilered </a>
+                    <a href="/textured">Textured </a> -->
+
+                    <a href="/tilered" class="link-secondary" >Tilered</a>
+                    <a href="/spriter" class="link-warning"  >Spriter</a>
+              
+                </div>
+              </nav>
+
+        </div>
+
+        <!-- <div class="row">
+            <div class="sidebar-heading border-bottom" style="margin-bottom:4px; margin-top:4px;">
+                Canvas <input type="number" id="cvWidth" value="512" style="width: 6em" onchange="setCanvasWidth(this.value)" /> x
+                <input type="number" id="cvHeight" value="512" style="width: 6em" onchange="setCanvasHeight(this.value)" />
+                <button type="button" class="btn bg-primary" onclick="triggerUploadImgs()">Add Image(s)</button>
+                <input id="upload-img" style="display:none;" type="file" name="upload-img[]" multiple />
+                <button type="button" class="btn bg-danger" style="float:right;" onclick="download()"
+                    data-toggle="tooltip" data-placement="top" title="Download files"><i class="bi-download"
+                        style="font-size: 1rem; "></i></button>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="sidebar-heading border-bottom "  style="background-color:#000;" >
+                
+                <button type="button" class="btn bg-danger" style="float:right;" onclick="download()"
+                data-toggle="tooltip" data-placement="top" title="Download files"><i class="bi-download" style="font-size: 1rem; "></i></button>
+
+                <div class="d-flex align-items-center gap-3">
+                    Background:
+                    <input id="bgColorPicker" type="color" value="#000000" onchange="setCanvasBg()" style="height:20px;" />
+            
+                    Grid Color:
+                    <input id="highlightColor" type="color" value="#ff0000" onchange="setHighlightColor()" style="height:20px;" />
+            
+                    Scale
+                    <select onchange="scaleCanvas(this.value)" id="scaleSel">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+            
+                    <button type="button" data-toggle="tooltip" data-placement="top" title="Adjust canvas size" class="btn btn-warning" onclick="alignBottom()">
+                        <i class="bi-arrows-fullscreen" style="font-size: 1rem;"></i>
+                    </button>
+            
+                    Canvas <input type="number" id="cvWidth" value="512" style="width: 6em" onchange="setCanvasWidth(this.value)" /> x
+                    <input type="number" id="cvHeight" value="512" style="width: 6em" onchange="setCanvasHeight(this.value)" />
+            
+                    <button type="button" class="btn bg-primary" onclick="triggerUploadImgs()">Add Image(s)</button>
+                    <input id="upload-img" style="display:none;" type="file" name="upload-img[]" multiple />
+                </div>
+               
+                        
+                           
+
+            </div>
+            
+            
+            
+               
+            
+        </div>
+        <div class="row">
+            <div class="col-8" style="overflow: auto; min-height:600px;">
+                <br />
+                <canvas id="canvas" width="512" height="512"></canvas>
+
+            </div>
+            <div class="col-4" style="overflow: auto; min-height:600px;">
+
+                <div class="row">
+                    <p>Image Settings:</p>
+                    <div style="">
+                        <input type="hidden" value="-1" id="img_sel_id" />
+                        <input class="form-control form-control-sm" placeholder="image name" style="width:180px;"
+                            type="field" value="" id="img_sel_name" onchange="setName(this.value)" />
+                        <br />
+                        <input class="form-control form-control-sm" placeholder="label" style="width:180px;"
+                            type="field" value="" id="img_sel_label" onchange="setLabel(this.value)" />
+                        <br />
+                        <input class="form-control form-control-sm" placeholder="copies" style="width:180px;"
+                            type="number" value="" id="img_sel_copies" onchange="setCopies(this.value)" />
+                        <br />
+                    </div>
+                    <div class="row">
+
+                        <p>Image Measures:</p>
+                        <div class="col-2">
+                            <div class="form-group" style="" id="">
+                                x<input class="form-control form-control-sm" type="field" value="" id="img_sel_x"
+                                    onchange="setImgX(this.value)" />
+
+                                y <input class="form-control form-control-sm" type="field" value="" id="img_sel_y"
+                                    onchange="setImgY(this.value)" />
+                            </div>
+
+                        </div>
+
+                        <div class="col-2">
+                            <div class="form-group" style="" id="">
+                                width
+                                <input class="form-control form-control-sm" type="field" value="" disabled
+                                    id="img_sel_w" />
+                                height
+                                <input class="form-control form-control-sm" type="field" value="" disabled
+                                    id="img_sel_h" />
+
+                            </div>
+
+                        </div>
+                        <div class="col-3">
+                            frame width
+                            <input class="form-control form-control-sm" type="field" value=""
+                                onchange="setFrameWidth(this.value)" id="img_sel_fw" />
+                            frame height
+                            <input class="form-control form-control-sm" type="field" value="" disabled
+                                id="img_sel_fh" />
+                            frames
+                            <input class="form-control form-control-sm" type="field" value="" id="img_sel_f" disabled />
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <p>Image List:</p>
+                <div class="card">
+                    <ul id="imageList" class="list-group list-group-flush" style="margin:0px;">
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JS-->
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/filesaver.min.js"></script>
+    <script src="/js/jszip.min.js"></script>
+    <script src="/js/spriter.js"></script>
+</body>
+
+</html>
