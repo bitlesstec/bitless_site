@@ -795,6 +795,11 @@ async function downloadProject() {
 
     zip.file("tilered.json", JSON.stringify(getProjectJsonData()));
 
+    // zip.file("level_design.png", ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
+    zip.file("level_design.png", canvas.toDataURL("image/png").split(";base64,")[1], { base64: true });
+
+
+    //set every tileset in the zip
     tilesetList.forEach(tileset => {
         // console.log(tileset.img.src)
         // console.log(tileset.img)
