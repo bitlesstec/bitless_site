@@ -299,7 +299,8 @@ function setImgY(val) {
     showHighlight(id);
 }
 
-function alignBottom() {
+function alignBottom() 
+{
     let xx = 0,
         xbigger = 0;
     let yy = 0,
@@ -323,6 +324,7 @@ function alignBottom() {
         canvas.height = ybigger;
     }
 
+    scaleCanvas(scaleSet);
     setCanvasBg(bgSet);
     drawImgs();
 }
@@ -450,7 +452,7 @@ function downloadZip()
 
 
     zip.generateAsync({ type: "blob" }).then(content => {
-        saveAs(content, "textured.zip");
+        saveAs(content, "spriter.zip");
     });
 
     scaleCanvas(scaleSet);
@@ -535,9 +537,14 @@ function dragImg(e)
         const xx = coords.x / parseInt(scaleSet) 
         const yy = coords.y / parseInt(scaleSet)
 
-        imageList[imgIdSelected - 1].imageMeasures.x = xx - selectImgX;
-        imageList[imgIdSelected - 1].imageMeasures.y = yy - selectImgY;
+        let nX = xx - selectImgX;
+        let nY = yy - selectImgY;
 
+
+        imageList[imgIdSelected - 1].imageMeasures.x = nX;
+        imageList[imgIdSelected - 1].imageMeasures.y = nY;
+
+      
         setCanvasBg(bgSet);
         drawImgs();
         showHighlight(imgIdSelected);
@@ -553,18 +560,18 @@ function releaseImg(e)
         const xx = coords.x / parseInt(scaleSet) 
         const yy = coords.y / parseInt(scaleSet)
 
+        let newX = Math.trunc(xx - selectImgX);
+        let newY = Math.trunc(yy - selectImgY);
 
-        let nX = xx - selectImgX;
-        let nY = yy - selectImgY;
+        newX = newX < 0 ? 0 : newX;
+        newY = newY < 0 ? 0 : newY;
 
-        nX = nX < 0 ? 0 : nX;
-        nY = nY < 0 ? 0 : nY;
+        imageList[imgIdSelected - 1].imageMeasures.x = newX;
+        imageList[imgIdSelected - 1].imageMeasures.y = newY;
 
-        imageList[imgIdSelected - 1].imageMeasures.x = nX;
-        imageList[imgIdSelected - 1].imageMeasures.y = nY;
 
         console.log(` imgSelected: ${imgIdSelected}`)
-console.log( document.getElementById(`item_${imgIdSelected}_x`) )
+        console.log( document.getElementById(`item_${imgIdSelected}_x`) )
         // document.getElementById(`item_${imgIdSelected}_x`).value = nX;
         // document.getElementById(`item_${imgIdSelected}_y`).value = nY;
 
