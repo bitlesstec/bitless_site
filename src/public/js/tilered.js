@@ -119,10 +119,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 // console.log("calling keyup: "+e.key)
                 switch (e.key.toLowerCase()) {
                     case 'b'://select brush
-                        setPainting(true);
+                        setPainting('tile');
                         break;
-                    case 'e'://select eraser
-                        setPainting(false);
+                    case 'a'://select eraser
+                        setPainting( 'animTile' );
+                        break;
+                        case 'e'://select eraser
+                        setPainting( 'eraser' );
                         break;
                     case 'r':
                         resetLayer();
@@ -232,6 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     setGridColor();
+    setPainting("tile")
 
 });//doc ready
 
@@ -326,7 +330,8 @@ function triggerUploadImgs() {
 async function loadFiles(fileList) {
 
 
-    if (isLoadingProject) {
+    if (isLoadingProject) 
+    {
         console.log("loading project")
 
         let jsonData = undefined;
@@ -506,10 +511,12 @@ async function loadFiles(fileList) {
                         "imgW": img.width,
                         "imgH": img.height,
                         "img": img,
-                        "imgType": file.name.substring(file.name.lastIndexOf('.'))
+                        "imgType": file.name.substring(file.name.lastIndexOf('.')),
+                        "opacity":1,
+                        "showIndexes": false
                     }
 
-                    tilesetList.push(imgObj);
+                    tilesetList.push(imgObj);//>>>
 
                     document.querySelector("#tilesetList").insertAdjacentHTML('beforeend', getTilesetTemplate(imgObj.id, imgObj.name));
                     // $("#tilesetList").append( getTilesetTemplate(imgObj.id, imgObj.name) );
@@ -571,9 +578,12 @@ function changeTsGridColor() {
     drawTilesetImage();
 
     if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
-
-}
+        showTilesetIndexesInCanvas()
+    }
+        
+}//>>>
 
 async function loadImg(url) {
     return await new Promise((resolve) => {
@@ -854,8 +864,11 @@ function scaleTileset() {
 
     //draw grid if visible
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tls.img, tls.gridW, tls.gridH, tilesetScale, tsGridColor);
-
+        showTilesetIndexesInCanvas()
+    }
+        
 }
 
 /**
@@ -921,7 +934,8 @@ function setTilesetBg(id) {
    
 }
 
-function selectTileset(id) {
+function selectTileset(id) 
+{
     //get tilesetSelected id
     let pastId = parseInt(document.querySelector("#tilesetSelected").value);
     if (pastId !== 0) {
@@ -937,10 +951,14 @@ function selectTileset(id) {
     drawSelectedTile()
 
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx,
             tilesetList[id - 1].img,
             tilesetList[id - 1].gridW,
             tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
+        showTilesetIndexesInCanvas()
+    }
+        
 }
 
 function drawTilesetImage() {
@@ -991,8 +1009,11 @@ function setTilesetGridW(val) {
     drawSelectedTile();
 
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, parseInt(document.querySelector("#tileset_gridw").value), parseInt(document.querySelector("#tileset_gridh").value), tilesetScale, tsGridColor)
-}
+        showTilesetIndexesInCanvas()
+    }
+   }
 
 function setTilesetGridH(val) {
     const id = parseInt(document.querySelector("#tilesetSelected").value);
@@ -1005,8 +1026,11 @@ function setTilesetGridH(val) {
     drawSelectedTile();
 
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, parseInt(document.querySelector("#tileset_gridw").value), parseInt(document.querySelector("#tileset_gridh").value), tilesetScale, tsGridColor)
-}
+        showTilesetIndexesInCanvas()
+    }
+ }
 
 function layerModalToggle(id) {
     console.log("opening modal")
@@ -1119,7 +1143,11 @@ function setTilesetGridW(val) {
     drawTilesetImage();
 
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, tilesetList[id - 1].gridW, tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
+        showTilesetIndexesInCanvas()
+    }
+        
 
 }
 
@@ -1136,7 +1164,11 @@ function setTilesetGridH(val) {
     drawTilesetImage();
 
     if (isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, tilesetList[id - 1].gridW, tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
+        showTilesetIndexesInCanvas()
+    }
+        
 
 }
 
@@ -1156,7 +1188,8 @@ function selectTile(e) {
 
 
     //check for initial x & y
-    if (tilePressed.presed) {
+    if (tilePressed.presed) 
+    {
         // console.log("ENTRA A TILE PRESSED")
         const cols = calculateCells(tilesetCanvas.width / tilesetScale, gw);
         // const rows = calculateCells(tilesetList[ tilesetId-1].imgH,gh);
@@ -1170,16 +1203,8 @@ function selectTile(e) {
         const endY = Math.trunc((endCoords.y / tilesetScale) / gh)//-1;
         const endIdx = (endY * cols) + endX;
 
-        // console.log(`iX ${initX} iY ${initY} cols: ${cols} initIdx ${initIdx}`)
-        // console.log(`eX ${endX} eY ${endY} cols: ${cols} endIdx ${endIdx}`)
-
-        // console.log(`XX ${(endX - initX)} YY ${(endY - initY)}` )
-        // console.log(`XX ${((endX - initX) * gw)+gw} YY ${((endY - initY) * gh)+gh}` )
-        // let newW = Math.ceil((endCoords.x - tilePressed.x) / gw); 
-        // let newH = Math.ceil((endCoords.y - tilePressed.y) / gh);
-
         if (initIdx === endIdx) {
-            console.log("ENTRA A INDX")
+            // console.log("ENTRA A INDX")
             //draw only one tile
             tileSelected = {
                 "tilesetId": tilesetId - 1,
@@ -1193,59 +1218,15 @@ function selectTile(e) {
         }
         else {
 
-            // console.log(`tilePressed: ${JSON.stringify(tilePressed)}`)
-            // console.log(`endCoords: ${JSON.stringify(endCoords)}`)
-
-            // console.log(`ex:${endCoords.x} - tpX:${tilePressed.x} / 32 = ${(endCoords.x - tilePressed.x) / gw}`)
-            // console.log(`ex:${endCoords.y} - tpX:${tilePressed.y} / 32 = ${(endCoords.y - tilePressed.y) / gh}`)
-
-            // const endCoords = getMouseCoordinates(e, tilesetCanvas);
-            // const endX = Math.trunc((endCoords.x / tilesetScale) / gw)//-1;
-            // const endY = Math.trunc((endCoords.y / tilesetScale) / gh)//-1;
-            // const endIdx = (endY * cols) + endX;
-
-            // tilePressed.x = Math.trunc(tilePressed.x / gw) * gw
-            // tilePressed.y = Math.trunc(tilePressed.y / gh) * gh
-
-            // console.log( `eX:${Math.trunc(endCoords.x) } - iX:${Math.trunc(tilePressed.x)} / scale: ${tilesetScale} `)
-            // console.log( `eY:${Math.trunc(endCoords.y)} - iY:${Math.trunc(tilePressed.y)} / scale: ${tilesetScale} `)
-
-            //this works fine, does not fill up incomplete tiles
-            // let newW = Math.ceil( ( (endCoords.x - tilePressed.x) / tilesetScale ) / gw);
-            // let newH = Math.ceil( ( (endCoords.y - tilePressed.y) / tilesetScale ) / gh);
-
-
-            /**
-             *      let iniX = Math.floor( (Math.trunc(coords.x) / tilesetScale ) / gw );
-                    let iniY = Math.floor( (Math.trunc(coords.y) / tilesetScale ) / gh );
-            
-                    console.log(` iniX: ${iniX} * gw: `)
-                    console.log(` iniY: ${iniY} * gw: `)
-            
-                    tilePressed.x = iniX * gw;
-                    tilePressed.y = iniY * gh;
-             */
-
             let endX = Math.ceil((Math.trunc(endCoords.x) / tilesetScale) / gw);
             let endY = Math.ceil((Math.trunc(endCoords.y) / tilesetScale) / gw);
 
             endX *= gw;
             endY *= gh;
 
-            // console.log(`ex:${endX} - tp.x:${ tilePressed.x} = ${ endX - tilePressed.x }`)
-            // console.log(`ex:${endY} - tp.x:${ tilePressed.y} = ${ endY - tilePressed.y }`)
-
             let newW = endX - tilePressed.x;
             let newH = endY - tilePressed.y;
 
-            // console.log(`ENTRA A MULTITILE ${newW} - ${newH}`)
-
-            // newW = newW === 0 ? gw : newW * gw;
-            // newH = newH === 0 ? gh : newH * gh;
-
-            //multiple tiles selected
-            // const newWidth = 
-            // const newHeight =
             tileSelected = {
                 "tilesetId": tilesetId - 1,
                 "tileset": tilesetList[tilesetId - 1].name,
@@ -1265,7 +1246,87 @@ function selectTile(e) {
     drawSelectedTile();
 
     if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
+    {
         drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
+        showTilesetIndexesInCanvas()
+    }
+        
+}//
+
+/**
+ * this is used to add tile info no animation tiles indexes wen set in the prompt
+ * @param {*} tileIndex 
+ * @returns 
+ */
+function getTileDataFromIndex( tileIndex ) 
+{
+    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
+
+    if (tilesetId <= 0 || tileIndex < 0 ) return;
+
+    const tileset = tilesetList[tilesetId - 1];
+
+    const { gridW, gridH, imgW } = tileset;
+
+    if (gridW === 0 | gridH === 0) return;
+
+
+    // const initX = Math.floor((tilePressed.x / tilesetScale) / gw)//-1;
+    // const initY = Math.floor((tilePressed.y / tilesetScale) / gh)//-1;
+    // const initIdx = (initY * cols) + initX;
+
+    // const endCoords = getMouseCoordinates(e, tilesetCanvas);
+    // const endX = Math.trunc((endCoords.x / tilesetScale) / gw)//-1;
+    // const endY = Math.trunc((endCoords.y / tilesetScale) / gh)//-1;
+    // const endIdx = (endY * cols) + endX;
+
+    // if (initIdx === endIdx) {
+    //     // console.log("ENTRA A INDX")
+    //     //draw only one tile
+    //     tileSelected = {
+    //         "tilesetId": tilesetId - 1,
+    //         "tileset": tilesetList[tilesetId - 1].name,
+    //         "srcX": initX * gw,
+    //         "srcY": initY * gh,
+    //         "tileW": gw,
+    //         "tileH": gh,
+    //         "index": initIdx //tileset index
+    //     }
+    // }
+
+    console.log()
+    const cols = Math.ceil( imgW / gridW );
+    const tileRow = Math.floor(tileIndex / cols);
+    const tileCol = tileIndex % cols; 
+    const srcX = tileCol * gridW;
+    const srcY = tileRow * gridH;
+
+    console.log(`cols:${cols} tileRow:${cols} tileCol: ${tileCol}  srcX: ${srcX}  srcY: ${srcY} `)
+
+    return {
+        "tilesetId": tilesetId - 1,
+        "tileset": tileset.name,
+        "srcX": srcX,
+        "srcY": srcY,
+        "tileW": gridW,
+        "tileH": gridH,
+        "index": tileIndex
+    };
+
+    // const imgObj =
+    // {
+    //     "id": ++imgIdCounter,
+    //     "name": file.name.substring(0, file.name.lastIndexOf('.')),
+    //     "gridW": 32,
+    //     "gridH": 32,
+    //     "imgW": img.width,
+    //     "imgH": img.height,
+    //     "img": img,
+    //     "imgType": file.name.substring(file.name.lastIndexOf('.')),
+    //     "opacity":1,
+    //     "showIndexes": false
+    // }
+
 }
 
 /** AQUI ME QUEDE
@@ -1306,7 +1367,8 @@ function pressTile(e) {
  * that was selected
  */
 function drawSelectedTile() {
-    if (tileSelected !== undefined) {
+    if (tileSelected !== undefined) 
+    {
         tilesetCtx.save();
         tilesetCtx.fillStyle = tsGridColor;
         tilesetCtx.globalAlpha = 0.4;
@@ -1319,7 +1381,8 @@ function drawSelectedTile() {
 }
 
 function dragTile(e) {
-    if (tileSelected !== undefined) {
+    if (tileSelected !== undefined) 
+    {
         const layerId = parseInt(document.querySelector("#layerSelected").value);
         const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
 
@@ -1361,7 +1424,8 @@ function getCellData(e, tileWidth, tileHeight, cnvs, scale) {
 
 }
 
-function putTileOnMap(e) {
+function putTileOnMap(e) 
+{
 
     if (!tileSelected) return;
 
@@ -1380,12 +1444,16 @@ function putTileOnMap(e) {
     // console.log(`x: `,cd.xx * gw)
     // console.log(`y: `,cd.yy * gh)
 
-    if (isPainting) {
+    // let addFrame = true;
+
+    if ( isPainting === "tile" || isPainting === "animTile" )  
+    {
         if (!layerList[layerId - 1].map[cd.index]) {
             const xx = cd.xx * gw;
             const yy = cd.yy * gh;
 
-            layerList[layerId - 1].map[cd.index] = {
+            layerList[ layerId - 1 ].map[ cd.index ] = 
+            {
                 "x": xx,
                 "y": yy,
                 "tilesetId": tileSelected.tilesetId,
@@ -1399,31 +1467,75 @@ function putTileOnMap(e) {
                 "dstY": yy //y position of tile in layer( used to draw in layer canvas)
             };
 
-            //to get invert Y position value for babylon
-            let ypos = (canvas.height / scaleSet) / tilesetList[tileSelected.tilesetId].gridH;
 
-            console.log(` CH: ${(canvas.height/scaleSet)} / TH: ${tilesetList[tileSelected.tilesetId].gridH} = ${ypos}`)
-            // console.log("== LAYERLIST ==")
-            // console.log(` ${layerList[layerId - 1].id} -  ${layerList[layerId - 1].name}`)
-            // console.log("== LAYERLIST ==")
-            console.log(layerList[layerId - 1])
-            layerList[layerId - 1].frames.push(   
+            let animTileAdded = true;//this in case we are setting animTile
+            if( isPainting === "animTile" )
+            {
+                const layer = layerList[layerId - 1]; 
+                      layer.map[cd.index].animated = true;
+
+                let indexesFrames = prompt("Enter tileset frame indexes separated by commas (e.g., 0,1,2,3):");
+
+                animTileAdded = addAnimationTile( layer, cd.index, tileSelected.tilesetId, indexesFrames )
+
+                if( !animTileAdded )
                 {
-                    "tileIndex": tileSelected.index,
-                    "filename": tileSelected.tileset,
-                    "frame": {
-                        x: tileSelected.srcX,
-                        y: tileSelected.srcY,
-                        w: tileSelected.tileW,
-                        h: tileSelected.tileH
-                    },
-                    "position": { x: cd.xx, y: --ypos - cd.yy },
-                    "rotated": false,
-                    "trimmed": false,
-                    "spriteSourceSize": { "x": 0, "y": 0, "w": tileSelected.tileW, "h": tileSelected.tileH },
-                    "sourceSize": { "w": tileSelected.tileH, "h": tileSelected.tileH }
+                    layer.map[cd.index] = undefined;
                 }
-            );
+                clickPressed = false;
+                // let indexesFrames = prompt("enter tileset frame indexes separated by coma eg: 0,1,2,3...") >>>
+
+                // console.log( `indexes Frames` )
+                //     console.log( indexesFrames )
+
+                // if( indexesFrames )
+                // {
+                //     const animationFrames =  indexesFrames.split(",")
+                //     console.log( `animationFrames` )
+                //     console.log( animationFrames )
+                //     layerList[layerId - 1].map[cd.index].animationFrames = animationFrames;
+                // }
+                // else
+                // {
+                //     //if there is no prompt for animated tiles, dont add any info as is not animated tile
+                //     layerList[layerId - 1].map[cd.index] = undefined;
+                // }
+                // clickPressed = false;
+                // console.log( `animationFrames layer added` )
+                // console.log( layerList[layerId - 1].map )
+            }
+
+            if( animTileAdded )
+            {
+                    //FOR BABYLON SUPPORT BELOW
+                    //to get invert Y position value for babylon
+                    let ypos = (canvas.height / scaleSet) / tilesetList[tileSelected.tilesetId].gridH;
+
+                    console.log(` CH: ${(canvas.height/scaleSet)} / TH: ${tilesetList[tileSelected.tilesetId].gridH} = ${ypos}`)
+                    // console.log("== LAYERLIST ==")
+                    // console.log(` ${layerList[layerId - 1].id} -  ${layerList[layerId - 1].name}`)
+                    // console.log("== LAYERLIST ==")
+                    console.log(layerList[layerId - 1])
+                    layerList[layerId - 1].frames.push(   
+                        {
+                            "tileIndex": tileSelected.index,
+                            "filename": tileSelected.tileset,
+                            "frame": {
+                                x: tileSelected.srcX,
+                                y: tileSelected.srcY,
+                                w: tileSelected.tileW,
+                                h: tileSelected.tileH
+                            },
+                            "position": { x: cd.xx, y: --ypos - cd.yy },
+                            "rotated": false,
+                            "trimmed": false,
+                            "spriteSourceSize": { "x": 0, "y": 0, "w": tileSelected.tileW, "h": tileSelected.tileH },
+                            "sourceSize": { "w": tileSelected.tileH, "h": tileSelected.tileH }
+                        }
+                    );
+                }
+
+           
 
 
             // console.log("tileMap entry:",layerList[layerId - 1].map[cd.index])
@@ -1447,7 +1559,8 @@ function putTileOnMap(e) {
             }
         }
     }
-    else if (layerList[layerId - 1].map[cd.index] !== undefined) {
+    else if (layerList[layerId - 1].map[cd.index] !== undefined) //erase tile at index pos
+    {
 
         layerList[layerId - 1].map[cd.index] = undefined;
 
@@ -1561,8 +1674,11 @@ function changeTilesetGridVisibility() {
         drawSelectedTile();
 
         if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
+        {
             drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
-
+            showTilesetIndexesInCanvas()
+        }
+            
     }
     else {
         drawTilesetImage();
@@ -1625,7 +1741,8 @@ function addLayer() {
         "rows": LYR_DEF_ROWS,
         "visibility": true,
         "opacity": 1,
-        "frames": []
+        "frames": [],
+        "animated":false
     })
 
     const txt = getLayerItemTemplate(lyrId, name);
@@ -1666,19 +1783,33 @@ function selectLayer(id) {
 }
 
 
-function setPainting(paint) {
+function setPainting(paint) 
+{
     isPainting = paint;
 
     const paintBtn = document.getElementById("paintBtn");
+    const animTileBtn = document.getElementById("animatedTileBtn");
     const eraserBtn = document.getElementById("eraserBtn");
 
-    if (isPainting) {
-        paintBtn.className = "btn bg-warning";
-        eraserBtn.className = "btn bg-secondary";
-    } else {
-        paintBtn.className = "btn bg-secondary";
-        eraserBtn.className = "btn bg-warning";
+    switch( paint )
+    {
+        case "tile":
+            paintBtn.className = "btn bg-warning";
+            eraserBtn.className = "btn bg-secondary";
+            animTileBtn.className = "btn bg-secondary";
+            break;
+        case "animTile":
+            paintBtn.className = "btn bg-secondary";
+            eraserBtn.className = "btn bg-secondary";
+            animTileBtn.className = "btn bg-warning";
+            break;
+        case "eraser":
+            paintBtn.className = "btn bg-secondary";
+            eraserBtn.className = "btn bg-warning";
+            animTileBtn.className = "btn bg-secondary";
+            break;
     }
+
 }
 
 function changeLayerVisibility(id) {
@@ -1693,18 +1824,26 @@ function changeLayerVisibility(id) {
 
 }
 
-
-function resetLayer() {
-    const layerId = parseInt(document.querySelector("#layerSelected").value)
-    const lyr = layerList[layerId - 1];
-    lyr.map = initMapArray(canvas, lyr.gridW, lyr.gridH);
-    lyr.frames = {}
-
-    setCanvasBg(bgSet)
-    drawLayers();
-
-    if (isGridVisible)
-        drawGrid(ctx, canvas, lyr.gridW, lyr.gridH, scaleSet, gridColor);
+/**
+ * will clean tiles for current selected layer
+ */
+function resetLayer() 
+{
+    const res = confirm("are you sure you want to clean this layer?")
+    if (res) 
+    {
+        const layerId = parseInt(document.querySelector("#layerSelected").value)
+        const lyr = layerList[layerId - 1];
+        lyr.map = initMapArray(canvas, lyr.gridW, lyr.gridH);
+        lyr.frames = {}
+    
+        setCanvasBg(bgSet)
+        drawLayers();
+    
+        if (isGridVisible)
+            drawGrid(ctx, canvas, lyr.gridW, lyr.gridH, scaleSet, gridColor);
+    }
+    
 }
 
 
@@ -1716,6 +1855,91 @@ function setLayerOpacity(val) {
     document.querySelector("#opacityLabel").innerHTML = `Opacity: ${val}`;
 }
 
+function setAnimatedLayer(value)
+{
+    const layerId = parseInt(document.querySelector("#layerSelected").value);
+    layerList[layerId - 1].animated = value; 
+}
+
+function setTilesetLayerOpacity(val) {
+    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
+
+    if ( tilesetList[ tilesetId - 1 ] != undefined )
+    {
+        tilesetList[ tilesetId - 1 ].opacity = parseFloat(val); 
+        // layerList[layerId - 1].opacity = 
+        // $("#layerOpacity").val()
+        document.querySelector("#opacityTilesetLabel").innerHTML = `Opacity: ${val}`;
+    }
+   
+}
+
+/**
+ * this will display index number on selected tileset grid
+ * useful to ste/create animated tiles
+ * @param {*} val 
+ */
+function showTilesetIndexes(val)
+{
+    console.log( `showTilesetIndexes: `, val )
+    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
+
+    if ( tilesetList[ tilesetId - 1 ] != undefined )
+    {
+        tilesetList[ tilesetId - 1 ].showIndexes =  val;
+        // layerList[layerId - 1].opacity = 
+        // $("#layerOpacity").val()
+        // document.querySelector("#opacityTilesetLabel").innerHTML = `Opacity: ${val}`;
+        showTilesetIndexesInCanvas()
+    }
+}
+
+function showTilesetIndexesInCanvas()
+{
+    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
+
+    const tilesetLayer = tilesetList[ tilesetId - 1 ] ;
+    if ( tilesetLayer !== undefined )
+    {
+
+        console.log( `showTilesetIndexesInCanvas` )
+        console.log( tilesetLayer )
+        if( tilesetLayer.showIndexes )
+        {
+        const ctx = tilesetCtx;  // Asegúrate de usar el contexto correcto
+        const gridW = tilesetLayer.gridW;
+        const gridH = tilesetLayer.gridH;
+        const imgW = tilesetLayer.imgW;
+        const imgH = tilesetLayer.imgH;
+        const img = tilesetLayer.img;
+        const scale = tilesetScale; 
+
+        let index = 0; // Índice inicial
+
+        // ctx.font = `${10 * scale}px Arial`; // Tamaño ajustado a la escala
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = tsGridColor;
+
+        for (let y = 0; y < imgH; y += gridH) 
+        {
+            for (let x = 0; x < imgW; x += gridW) 
+            {
+                // Calcula la posición central de cada celda
+                const centerX = ( x + gridW / 2 ) * scale;
+                const centerY = ( y + gridH / 2 ) * scale;
+
+                // Dibuja el índice en la posición central
+                ctx.fillText(index, centerX, centerY);
+
+                index++; // Incrementa el índice
+            }
+        }
+
+        }
+    }
+
+}//>>>
 
 function addArea() {
     const arId = ++areaIdCounter;
@@ -1921,4 +2145,32 @@ function getFileType(fileName) {
     } else {
         return undefined;
     }
+}
+
+
+function addAnimationTile( layer, tileIndex, tilesetId, indexesFrames )
+{
+
+    console.log( `indexesFrames: `, indexesFrames)
+    if( !indexesFrames ) return false;
+
+    const animationFrames = indexesFrames
+        .split(",")
+        .map(frame => parseInt(frame.trim()))
+        .filter(frame => !isNaN(frame));
+
+        if (animationFrames.length === 0) {
+            alert("Invalid frames. Animation not added.");
+            return false;
+        }
+
+        layer.map[tileIndex].animated = true;
+
+        const animationFramesTiles = animationFrames.map ( idx => getTileDataFromIndex( idx ) )
+
+        layer.map[tileIndex].animationFrames = animationFramesTiles;
+        console.log( `layer.map[tileIndex].animationFrames` )
+        console.log(layer.map[tileIndex].animationFrames )
+        
+    return true;
 }

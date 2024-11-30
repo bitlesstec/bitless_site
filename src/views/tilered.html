@@ -74,8 +74,9 @@
                 Grid 
                 <!--input type="checkbox" id="showGrid" checked onchange="changeGridVisibility()" / -->
             <label class="btn bg-primary" data-toggle="tooltip" data-placement="top" title="Change grid visibility" id="showGrid" onclick="changeGridVisibility()" ><i class="bi-eye-fill" style="font-size: 1rem; "></i></label>
-            <label data-toggle="tooltip" data-placement="top" title="Brush(B key)" class="btn btn-warning" id="paintBtn" onclick="setPainting(true)" ><i class="bi-pencil-square" style="font-size: 1rem; "></i></label>
-            <label data-toggle="tooltip" data-placement="top" title="Eraser(E key)" class="btn bg-secondary" id="eraserBtn" onclick="setPainting(false)" >  <i class="bi-eraser" style="font-size: 1rem; "></i> </label>
+            <label data-toggle="tooltip" data-placement="top" title="Brush(B key)" class="btn btn-warning" id="paintBtn" onclick="setPainting('tile')" ><i class="bi-pencil-square" style="font-size: 1rem; "></i></label>
+            <label data-toggle="tooltip" data-placement="top" title="Animated Tile Brush(A key)" class="btn btn-secondary" id="animatedTileBtn" onclick="setPainting('animTile')" ><i class="bi bi-fast-forward-btn" style="font-size: 1rem; "></i></label>
+            <label data-toggle="tooltip" data-placement="top" title="Eraser(E key)" class="btn bg-secondary" id="eraserBtn" onclick="setPainting('eraser')" >  <i class="bi-eraser" style="font-size: 1rem; "></i> </label>
             <label data-toggle="tooltip" data-placement="top" title="Reset(R key)" class="btn bg-danger"  onclick="resetLayer()" > <i class="bi-repeat" style="font-size: 1rem; "></i> </label>
 
             </div>
@@ -190,6 +191,12 @@
                     <buttom class="btn bg-primary" id="layerDownBtn" onclick="moveLayer('down')">Move Down</buttom>
                 </div>
             </div>
+            <div class="input-group mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Animated Tile</label>
+                    <input type="checkbox"  id="layerAnimatedTile"  value="false" onchange="setAnimatedLayer(this.checked)" />
+                </div>
+            </div>
       </div>
 
     </div>
@@ -214,6 +221,20 @@
                     <label class="form-label">Tileset Name</label>
                     <input type="text" class="form-control" id="modal_tilesetName" value=""
                         onchange="setTilesetName(this.value)" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Opacity</label>
+                    <label for="layerOpacity" class="form-label" id="opacityTilesetLabel">Opacity: 1</label>
+                    <input type="range" class="form-range" id="tilesetlayerOpacity" min="0" max="1" step="0.1" value="1" onchange="setTilesetLayerOpacity(this.value)" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Show Indexes</label>
+                    <!-- <label for="layerOpacity" class="form-label" id="opacityTilesetLabel">Opacity: 1</label> -->
+                    <input type="checkbox"  id="showTilesetIndexes"  value="false" onchange="showTilesetIndexes(this.checked)" />
                 </div>
             </div>
             <div class="input-group mb-3">
