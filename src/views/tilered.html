@@ -105,7 +105,7 @@
                 </div>
                 <div>
 
-                    <p>Tileset Selected:</p>
+                    <p>Tileset Index: <span id="tilesetIdx" ></span></p>
                     <div style="border-bottom: 1px solid #ccc;">
                         <input type="hidden" id="tilesetSelected" value="0" />
                         <input type="hidden" id="layerSelected" value="1" />
@@ -228,13 +228,6 @@
                     <label class="form-label">Opacity</label>
                     <label for="layerOpacity" class="form-label" id="opacityTilesetLabel">Opacity: 1</label>
                     <input type="range" class="form-range" id="tilesetlayerOpacity" min="0" max="1" step="0.1" value="1" onchange="setTilesetLayerOpacity(this.value)" />
-                </div>
-            </div>
-            <div class="mb-3">
-                <div class="col-md-3">
-                    <label class="form-label">Show Indexes</label>
-                    <!-- <label for="layerOpacity" class="form-label" id="opacityTilesetLabel">Opacity: 1</label> -->
-                    <input type="checkbox"  id="showTilesetIndexes"  value="false" onchange="showTilesetIndexes(this.checked)" />
                 </div>
             </div>
             <div class="input-group mb-3">

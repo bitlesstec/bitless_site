@@ -177,6 +177,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+    window.addEventListener("mouseup", (e) => {
+        clickPressed = false;
+        if( tilePressed ) tilePressed.presed = false;
+    });
+
+
     const lyrId = ++layerIdCounter;
     const lyrName = "layer1";
     layerList.push({
@@ -512,8 +518,8 @@ async function loadFiles(fileList) {
                         "imgH": img.height,
                         "img": img,
                         "imgType": file.name.substring(file.name.lastIndexOf('.')),
-                        "opacity":1,
-                        "showIndexes": false
+                        "opacity":1
+                        // "showIndexes": false
                     }
 
                     tilesetList.push(imgObj);//>>>
@@ -580,7 +586,7 @@ function changeTsGridColor() {
     if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
         
 }//>>>
@@ -866,7 +872,7 @@ function scaleTileset() {
     if (isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tls.img, tls.gridW, tls.gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
         
 }
@@ -956,7 +962,7 @@ function selectTileset(id)
             tilesetList[id - 1].img,
             tilesetList[id - 1].gridW,
             tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
         
 }
@@ -1011,7 +1017,7 @@ function setTilesetGridW(val) {
     if (isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, parseInt(document.querySelector("#tileset_gridw").value), parseInt(document.querySelector("#tileset_gridh").value), tilesetScale, tsGridColor)
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
    }
 
@@ -1028,7 +1034,7 @@ function setTilesetGridH(val) {
     if (isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, parseInt(document.querySelector("#tileset_gridw").value), parseInt(document.querySelector("#tileset_gridh").value), tilesetScale, tsGridColor)
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
  }
 
@@ -1145,7 +1151,7 @@ function setTilesetGridW(val) {
     if (isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, tilesetList[id - 1].gridW, tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
         
 
@@ -1166,7 +1172,7 @@ function setTilesetGridH(val) {
     if (isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[id - 1].img, tilesetList[id - 1].gridW, tilesetList[id - 1].gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
+        // showTilesetIndexesInCanvas()
     }
         
 
@@ -1177,12 +1183,13 @@ function setTilesetGridH(val) {
  * that will be set later on the map at specific selected layer
  * this is not selectTileset
  */
-function selectTile(e) {
+function selectTile(e) //>>>
+{
     const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
     if (tilesetId === 0) return;
 
-    const gw = tilesetList[tilesetId - 1].gridW;
-    const gh = tilesetList[tilesetId - 1].gridH;
+    const gw = tilesetList[tilesetId - 1].gridW ;
+    const gh = tilesetList[tilesetId - 1].gridH ;
 
     if (gw === 0 | gh === 0) return;
 
@@ -1190,20 +1197,23 @@ function selectTile(e) {
     //check for initial x & y
     if (tilePressed.presed) 
     {
-        // console.log("ENTRA A TILE PRESSED")
         const cols = calculateCells(tilesetCanvas.width / tilesetScale, gw);
-        // const rows = calculateCells(tilesetList[ tilesetId-1].imgH,gh);
+        const initX = Math.floor((tilePressed.x / tilesetScale) / gw * tilesetScale)//-1;
+        const initY = Math.floor((tilePressed.y / tilesetScale) / gh * tilesetScale)//-1;
 
-        const initX = Math.floor((tilePressed.x / tilesetScale) / gw)//-1;
-        const initY = Math.floor((tilePressed.y / tilesetScale) / gh)//-1;
         const initIdx = (initY * cols) + initX;
 
+        // console.log( `inY:${initY} , cols: ${cols} , inX: ${initX}` )
+        //show selected tileset index on top of tileset canvas for animated tiles
+        document.querySelector("#tilesetIdx").innerHTML = initIdx;
+
         const endCoords = getMouseCoordinates(e, tilesetCanvas);
-        const endX = Math.trunc((endCoords.x / tilesetScale) / gw)//-1;
-        const endY = Math.trunc((endCoords.y / tilesetScale) / gh)//-1;
+        const endX = Math.trunc((endCoords.x / tilesetScale) / gw * tilesetScale)//-1;
+        const endY = Math.trunc((endCoords.y / tilesetScale) / gh * tilesetScale)//-1;
         const endIdx = (endY * cols) + endX;
 
-        if (initIdx === endIdx) {
+        if (initIdx === endIdx) 
+        {
             // console.log("ENTRA A INDX")
             //draw only one tile
             tileSelected = {
@@ -1248,7 +1258,6 @@ function selectTile(e) {
     if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
     {
         drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
-        showTilesetIndexesInCanvas()
     }
         
 }//
@@ -1336,7 +1345,8 @@ function getTileDataFromIndex( tileIndex )
 function pressTile(e) {
     const coords = getMouseCoordinates(e, tilesetCanvas);
 
-    if (!tilePressed.presed) {
+    if (!tilePressed.presed) 
+    {
         tilePressed.presed = true;
 
         const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
@@ -1344,6 +1354,8 @@ function pressTile(e) {
 
         const gw = tilesetList[tilesetId - 1].gridW;
         const gh = tilesetList[tilesetId - 1].gridH;
+
+        // tilesetList[tilesetId - 1].
 
         //@todo check here the tile clicked so we can fix x & y since its initial position
         //and not where click.X and click.Y were made
@@ -1357,7 +1369,6 @@ function pressTile(e) {
 
         tilePressed.x = iniX * gw;
         tilePressed.y = iniY * gh;
-
     }
 
 }
@@ -1676,7 +1687,7 @@ function changeTilesetGridVisibility() {
         if (tilesetList[tilesetId - 1] !== undefined && isTilesetGridVisible)
         {
             drawGrid(tilesetCtx, tilesetList[tilesetId - 1].img, tilesetList[tilesetId - 1].gridW, tilesetList[tilesetId - 1].gridH, tilesetScale, tsGridColor);
-            showTilesetIndexesInCanvas()
+            // showTilesetIndexesInCanvas()
         }
             
     }
@@ -1874,72 +1885,68 @@ function setTilesetLayerOpacity(val) {
    
 }
 
-/**
- * this will display index number on selected tileset grid
- * useful to ste/create animated tiles
- * @param {*} val 
- */
-function showTilesetIndexes(val)
-{
-    console.log( `showTilesetIndexes: `, val )
-    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
 
-    if ( tilesetList[ tilesetId - 1 ] != undefined )
-    {
-        tilesetList[ tilesetId - 1 ].showIndexes =  val;
-        // layerList[layerId - 1].opacity = 
-        // $("#layerOpacity").val()
-        // document.querySelector("#opacityTilesetLabel").innerHTML = `Opacity: ${val}`;
-        showTilesetIndexesInCanvas()
-    }
-}
+// function showTilesetIndexes(val)>>>
+// {
+//     console.log( `showTilesetIndexes: `, val )
+//     const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
 
-function showTilesetIndexesInCanvas()
-{
-    const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
+//     if ( tilesetList[ tilesetId - 1 ] != undefined )
+//     {
+//         tilesetList[ tilesetId - 1 ].showIndexes =  val;
+//         // layerList[layerId - 1].opacity = 
+//         // $("#layerOpacity").val()
+//         // document.querySelector("#opacityTilesetLabel").innerHTML = `Opacity: ${val}`;
+//         // showTilesetIndexesInCanvas()
+//     }
+// }
 
-    const tilesetLayer = tilesetList[ tilesetId - 1 ] ;
-    if ( tilesetLayer !== undefined )
-    {
+// function showTilesetIndexesInCanvas()
+// {
+//     const tilesetId = parseInt(document.querySelector("#tilesetSelected").value);
 
-        console.log( `showTilesetIndexesInCanvas` )
-        console.log( tilesetLayer )
-        if( tilesetLayer.showIndexes )
-        {
-        const ctx = tilesetCtx;  // Asegúrate de usar el contexto correcto
-        const gridW = tilesetLayer.gridW;
-        const gridH = tilesetLayer.gridH;
-        const imgW = tilesetLayer.imgW;
-        const imgH = tilesetLayer.imgH;
-        const img = tilesetLayer.img;
-        const scale = tilesetScale; 
+//     const tilesetLayer = tilesetList[ tilesetId - 1 ] ;
+//     if ( tilesetLayer !== undefined )
+//     {
 
-        let index = 0; // Índice inicial
+//         console.log( `showTilesetIndexesInCanvas` )
+//         console.log( tilesetLayer )
+//         if( tilesetLayer.showIndexes )
+//         {
+//         const ctx = tilesetCtx;  // Asegúrate de usar el contexto correcto
+//         const gridW = tilesetLayer.gridW;
+//         const gridH = tilesetLayer.gridH;
+//         const imgW = tilesetLayer.imgW;
+//         const imgH = tilesetLayer.imgH;
+//         const img = tilesetLayer.img;
+//         const scale = tilesetScale; 
 
-        // ctx.font = `${10 * scale}px Arial`; // Tamaño ajustado a la escala
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = tsGridColor;
+//         let index = 0; // Índice inicial
 
-        for (let y = 0; y < imgH; y += gridH) 
-        {
-            for (let x = 0; x < imgW; x += gridW) 
-            {
-                // Calcula la posición central de cada celda
-                const centerX = ( x + gridW / 2 ) * scale;
-                const centerY = ( y + gridH / 2 ) * scale;
+//         // ctx.font = `${10 * scale}px Arial`; // Tamaño ajustado a la escala
+//         ctx.textAlign = "center";
+//         ctx.textBaseline = "middle";
+//         ctx.fillStyle = tsGridColor;
 
-                // Dibuja el índice en la posición central
-                ctx.fillText(index, centerX, centerY);
+//         for (let y = 0; y < imgH; y += gridH) 
+//         {
+//             for (let x = 0; x < imgW; x += gridW) 
+//             {
+//                 // Calcula la posición central de cada celda
+//                 const centerX = ( x + gridW / 2 ) * scale;
+//                 const centerY = ( y + gridH / 2 ) * scale;
 
-                index++; // Incrementa el índice
-            }
-        }
+//                 // Dibuja el índice en la posición central
+//                 ctx.fillText(index, centerX, centerY);
 
-        }
-    }
+//                 index++; // Incrementa el índice
+//             }
+//         }
 
-}//>>>
+//         }
+//     }
+
+// }//>>>
 
 function addArea() {
     const arId = ++areaIdCounter;
